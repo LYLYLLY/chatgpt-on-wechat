@@ -69,3 +69,14 @@ def run():
 
 if __name__ == "__main__":
     run()
+# ==========================================
+# Vercel 专属入口配置
+# ==========================================
+import os
+from channel import channel_factory
+from config import load_config
+
+if os.environ.get('VERCEL'):
+    load_config()
+    channel = channel_factory.create_channel("wechatmp")
+    app = channel.app
