@@ -3,12 +3,14 @@ import sys
 
 
 def _reset_logger(log):
-    for handler in log.handlers:
+    # Remove existing handlers
+    for handler in list(log.handlers):
         handler.close()
         log.removeHandler(handler)
         del handler
     log.handlers.clear()
     log.propagate = False
+    # Use console handler only to avoid file writes in read-only environments
     console_handle = logging.StreamHandler(sys.stdout)
     console_handle.setFormatter(
         logging.Formatter(
@@ -16,14 +18,6 @@ def _reset_logger(log):
             datefmt="%Y-%m-%d %H:%M:%S",
         )
     )
-    file_handle = logging.FileHandler("run.log", encoding="utf-8")
-    file_handle.setFormatter(
-        logging.Formatter(
-            "[%(levelname)s][%(asctime)s][%(filename)s:%(lineno)d] - %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
-        )
-    )
-    log.addHandler(file_handle)
     log.addHandler(console_handle)
 
 
